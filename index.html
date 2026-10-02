@@ -1,92 +1,160 @@
 <!DOCTYPE html>
+<!-- DOCTYPE: avisa ao navegador que este arquivo usa HTML5 (o padrão atual). -->
 <html lang="pt-BR">
+<!-- <html>: raiz do documento. lang="pt-BR" informa o idioma (ajuda leitores de tela e tradutores). -->
 <head>
+  <!-- <head>: informações sobre a página que não aparecem na tela. -->
   <meta charset="UTF-8">
+  <!-- Codificação UTF-8: garante que acentos (ç, ã, é) e emojis apareçam corretamente. -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Faz a página se ajustar à largura do celular, em vez de aparecer "miniaturizada". -->
   <title>Forca</title>
+  <!-- Título que aparece na aba do navegador. -->
   <link rel="stylesheet" href="style.css">
+  <!-- Conecta o arquivo de estilos (cores, tamanhos, animações). -->
 </head>
 <body>
+  <!-- <body>: tudo o que aparece na tela fica aqui dentro. -->
+
   <!-- BARRA DA CATEGORIA: fica fixa no topo durante a partida -->
   <div id="topic" class="topic" aria-live="polite">
+    <!-- id="topic": o JS encontra este elemento por esse nome. class="topic": o CSS estiliza por ela.
+         aria-live="polite": leitores de tela avisam quando o conteúdo mudar, sem interromper a fala atual. -->
     <span class="t-ico" id="tIco"></span>
+    <!-- Espaço do emoji da categoria (🐘, 🍫...). O JS preenche. -->
     <div><div class="label">Categoria</div><strong id="tName"></strong></div>
+    <!-- Rótulo pequeno "Categoria" + o nome da categoria em destaque (<strong>). O JS preenche o nome. -->
     <div class="t-side" id="lives" aria-label="Vidas restantes"></div>
+    <!-- Lado direito da barra: aqui o JS desenha os corações (vidas). aria-label dá um nome acessível. -->
   </div>
 
   <main>
+    <!-- <main>: conteúdo principal da página (um só por página). -->
     <header>
+      <!-- Cabeçalho do jogo. -->
       <h1>Forca</h1>
+      <!-- Título principal. -->
       <p class="sub">Uma palavra. Seis chances.</p>
+      <!-- Subtítulo em itálico. -->
       <p class="player" id="player"></p>
+      <!-- Mostra "Nome · Dificuldade" do jogador depois que a partida começa (o JS preenche). -->
     </header>
 
     <div id="setup" class="setup" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+      <!-- Tela de configuração que cobre tudo até o jogador começar.
+           role="dialog" + aria-modal="true": dizem aos leitores de tela que é uma janela modal.
+           aria-labelledby: aponta qual elemento é o título da janela (o h2 abaixo). -->
       <div class="setup-box">
+        <!-- Caixa central com largura limitada. -->
         <h2 id="setupTitle">Antes de começar</h2>
+        <!-- Título da janela de configuração. -->
 
         <label class="label" for="name">Seu nome</label>
+        <!-- <label for="name">: associa o texto ao campo de id="name"; clicar no texto foca o campo. -->
         <input id="name" type="text" maxlength="20" autocomplete="off" placeholder="Como devemos chamar você?">
+        <!-- Campo de texto. maxlength=20 limita o tamanho; autocomplete="off" desliga sugestões do navegador;
+             placeholder é a dica cinza que some ao digitar. -->
 
         <div class="label">Categoria <span class="scroll-hint">deslize →</span></div>
+        <!-- Rótulo da seção + aviso discreto de que dá para rolar para o lado. -->
         <div id="cats" class="rail" role="radiogroup" aria-label="Categoria"></div>
+        <!-- Carrossel de categorias (o JS cria os botões). role="radiogroup": grupo de opções onde só uma vale. -->
 
         <div class="label">Dificuldade</div>
+        <!-- Rótulo da seção de dificuldade. -->
         <div id="levels" class="choices" role="radiogroup" aria-label="Dificuldade">
+          <!-- Grupo de três botões de dificuldade. -->
           <button type="button" role="radio" data-level="easy"><b>Fácil</b><small>Palavras curtas</small></button>
+          <!-- type="button": não envia formulário. role="radio": age como opção de escolha única.
+               data-level="easy": atributo personalizado que o JS lê para saber qual nível foi clicado. -->
           <button type="button" role="radio" data-level="medium"><b>Médio</b><small>Palavras médias</small></button>
+          <!-- Opção Médio. -->
           <button type="button" role="radio" data-level="hard"><b>Difícil</b><small>Palavras longas</small></button>
+          <!-- Opção Difícil. -->
         </div>
 
         <div class="label">Dicas por partida</div>
+        <!-- Rótulo da seção de dicas. -->
         <div id="hintChoices" class="choices" role="radiogroup" aria-label="Quantidade de dicas">
+          <!-- Grupo de botões para escolher quantas dicas haverá. -->
           <button type="button" role="radio" data-n="0">0</button>
+          <!-- data-n guarda o número de dicas: 0. -->
           <button type="button" role="radio" data-n="1">1</button>
+          <!-- 1 dica. -->
           <button type="button" role="radio" data-n="2">2</button>
+          <!-- 2 dicas. -->
         </div>
         <p class="note" id="setupNote"></p>
+        <!-- Nota explicativa da dificuldade escolhida (ex.: "Palavras de até 7 letras."). O JS preenche. -->
 
         <button id="startBtn" type="button" class="start">Começar partida</button>
+        <!-- Botão que fecha a configuração e inicia o jogo. -->
       </div>
     </div>
 
     <section class="board">
+      <!-- <section>: o tabuleiro do jogo, com duas colunas (desenho à esquerda, informações à direita). -->
       <div class="stage" role="img" aria-label="Desenho da forca">
+        <!-- Palco do desenho. role="img" + aria-label: leitores de tela tratam como uma imagem descrita. -->
         <div class="frame base"></div><div class="frame pole"></div>
+        <!-- Estrutura fixa: base (chão) e poste vertical. Cada peça é uma <div> posicionada pelo CSS. -->
         <div class="frame beam"></div><div class="frame rope"></div>
+        <!-- Estrutura fixa: viga horizontal e corda. -->
         <div class="part head"></div><div class="part body"></div>
+        <!-- Partes do boneco: cabeça e corpo. Começam invisíveis; aparecem a cada erro. -->
         <div class="part arm l"></div><div class="part arm r"></div>
+        <!-- Braços esquerdo (l) e direito (r). Duas classes na mesma peça: "arm" (comum) e "l"/"r" (lado). -->
         <div class="part leg l"></div><div class="part leg r"></div>
+        <!-- Pernas esquerda e direita. A ordem aqui é a ordem em que aparecem a cada erro. -->
       </div>
 
       <div class="info">
+        <!-- Coluna da direita: palavra, letras usadas, erros e dicas. -->
         <div>
           <div class="label">Palavra</div>
+          <!-- Rótulo "Palavra". -->
           <div id="word" aria-live="polite"></div>
+          <!-- Aqui o JS desenha as lacunas/letras. aria-live avisa leitores de tela sobre mudanças. -->
         </div>
         <div class="meta">
+          <!-- Linha com duas informações lado a lado. -->
           <div><div class="label">Letras usadas</div><div id="used"></div></div>
+          <!-- Lista das letras já tentadas (acertos e erros). -->
           <div class="right"><div class="label">Erros</div><div id="counter">0 / 6</div></div>
+          <!-- Contador de erros, alinhado à direita (class="right"). -->
         </div>
         <div class="hints">
+          <!-- Bloco de dicas. -->
           <div class="label">Dicas</div>
+          <!-- Rótulo "Dicas". -->
           <ol id="hintList"></ol>
+          <!-- <ol>: lista numerada onde o JS insere as dicas reveladas. -->
           <button id="hintBtn" type="button" class="link">Pedir dica</button>
+          <!-- Botão para revelar a próxima dica (parece um link sublinhado graças ao CSS). -->
         </div>
       </div>
     </section>
 
     <p id="msg" role="status" aria-live="assertive"></p>
+    <!-- Mensagens do jogo ("A letra A está na palavra", "Vitória!"...).
+         role="status" e aria-live="assertive": leitores de tela leem imediatamente. -->
     <div id="kb" aria-label="Teclado virtual"></div>
+    <!-- Teclado virtual: o JS cria um botão para cada letra de A a Z. -->
 
     <footer>
+      <!-- Rodapé com os botões de ação e as estatísticas. -->
       <button id="new" type="button">Nova partida</button>
+      <!-- Sorteia outra palavra mantendo as configurações. -->
       <button id="change" type="button" class="link">Trocar categoria</button>
+      <!-- Reabre a tela de configuração. -->
       <p id="stats"></p>
+      <!-- Placar: vitórias, derrotas, sequência e recorde (o JS preenche). -->
     </footer>
   </main>
 
   <div id="confetti" aria-hidden="true"></div>
+  <!-- Camada onde o JS joga os confetes da vitória. aria-hidden="true": leitores de tela ignoram (é só decoração). -->
   <script src="script.js"></script>
+  <!-- Carrega o JavaScript por último, para que todos os elementos acima já existam quando o código rodar. -->
 </body>
 </html>

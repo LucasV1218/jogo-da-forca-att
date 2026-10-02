@@ -3,53 +3,69 @@
    Definimos cores e fontes uma única vez. Para mudar o tema
    inteiro, basta alterar os valores aqui.
    ========================================================== */
-   :root{
-    --paper:#f5f2ec;   /* fundo marfim */
+   :root{ /* :root = o elemento <html>; variáveis declaradas aqui valem para a página toda */
+    --paper:#f5f2ec;   /* fundo marfim. Variáveis CSS começam com "--" e são usadas com var(--nome) */
     --ink:#1c1b19;     /* texto principal, quase preto */
     --muted:#8a857c;   /* texto secundário (cinza quente) */
     --line:#d9d4c8;    /* linhas finas e bordas */
     --accent:#7a2e2e;  /* única cor de destaque (vinho) */
-    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; /* lista de fontes: usa a primeira disponível */
-    --sans:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; /* lista de fontes: usa a primeira disponível; "serif" é o plano B genérico */
+    --sans:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif; /* fontes sem serifa, usadas em rótulos e botões */
   }
   
   /* Faz width/height incluírem padding e borda: facilita calcular tamanhos */
-  *{box-sizing:border-box}
+  *{box-sizing:border-box} /* "*" = todos os elementos; sem isso, padding somaria ao width e quebraria contas */
   
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);min-height:100vh}
+  body{
+    margin:0;                  /* remove a margem padrão do navegador */
+    background:var(--paper);   /* fundo marfim (usa a variável) */
+    color:var(--ink);          /* cor padrão do texto */
+    font-family:var(--serif);  /* fonte padrão com serifa */
+    min-height:100vh;          /* altura mínima = 100% da altura da janela (vh = "viewport height") */
+  }
   
   /* Coluna central com largura máxima: mantém a leitura confortável */
-  main{max-width:760px;margin:0 auto;padding:32px 24px 48px}
+  main{
+    max-width:760px;           /* nunca passa de 760px de largura */
+    margin:0 auto;             /* 0 em cima/embaixo, "auto" nas laterais = centraliza */
+    padding:32px 24px 48px;    /* espaço interno: topo 32, laterais 24, base 48 */
+  }
   
   /* ==========================================================
      2. CABEÇALHO
      ========================================================== */
-  header{text-align:center;margin-bottom:28px}
+  header{text-align:center;margin-bottom:28px} /* centraliza o texto e afasta 28px do conteúdo abaixo */
   h1{
-    font-weight:400;font-size:44px;
-    letter-spacing:.32em;          /* espaço entre letras = ar de elegância */
-    text-transform:uppercase;
-    margin:0 0 10px;
-    padding-left:.32em;            /* compensa o espaço extra no fim, para centralizar de verdade */
+    font-weight:400;font-size:44px;  /* peso normal (não negrito) e tamanho grande */
+    letter-spacing:.32em;            /* espaço entre letras = ar de elegância (em = relativo ao tamanho da fonte) */
+    text-transform:uppercase;        /* transforma tudo em MAIÚSCULAS */
+    margin:0 0 10px;                 /* sem margem em cima/laterais, 10px embaixo */
+    padding-left:.32em;              /* compensa o espaço extra no fim, para centralizar de verdade */
   }
-  .sub{margin:0;font-style:italic;color:var(--muted);font-size:17px}
+  .sub{margin:0;font-style:italic;color:var(--muted);font-size:17px} /* subtítulo: itálico, cinza, sem margem */
   
   /* Rótulo pequeno usado acima de cada bloco ("PALAVRA", "ERROS"...) */
-  .label{font:11px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .label{
+    font:11px/1 var(--sans);   /* atalho "font": tamanho 11px, altura de linha 1, fonte sem serifa */
+    letter-spacing:.2em;       /* letras bem espaçadas */
+    text-transform:uppercase;  /* maiúsculas */
+    color:var(--muted);        /* cinza discreto */
+    margin-bottom:12px;        /* respiro abaixo do rótulo */
+  }
   
   /* ==========================================================
      3. TABULEIRO (grid de 2 colunas)
      ========================================================== */
   .board{
-    display:grid;
-    grid-template-columns:240px 1fr;   /* coluna fixa do desenho + resto para informações */
-    gap:48px;padding:36px 0;
-    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    display:grid;                      /* ativa o layout em grade */
+    grid-template-columns:240px 1fr;   /* coluna fixa do desenho + resto para informações (1fr = fração do espaço livre) */
+    gap:48px;padding:36px 0;           /* espaço entre colunas; espaço interno em cima/embaixo */
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line); /* linhas finas acima e abaixo */
   }
   /* Em telas estreitas (celular) empilha as colunas */
-  @media(max-width:640px){
-    .board{grid-template-columns:1fr;gap:28px}
-    .stage{margin:0 auto}
+  @media(max-width:640px){ /* media query: as regras abaixo só valem se a tela tiver até 640px */
+    .board{grid-template-columns:1fr;gap:28px} /* uma única coluna; espaço menor entre os blocos */
+    .stage{margin:0 auto}                      /* centraliza o desenho */
   }
   
   /* ==========================================================
@@ -58,67 +74,67 @@
      220x260px. position:absolute coloca cada peça por coordenadas
      (left/top/bottom) relativas ao .stage.
      ========================================================== */
-  .stage{position:relative;width:220px;height:260px}
-  .stage div{position:absolute;background:var(--ink)}
+  .stage{position:relative;width:220px;height:260px} /* relative: serve de "referência" para as peças absolutas lá dentro */
+  .stage div{position:absolute;background:var(--ink)} /* toda peça flutua por coordenadas e começa preta */
   
   /* Estrutura fixa */
-  .base{left:20px;bottom:0;width:160px;height:2px}
-  .pole{left:60px;bottom:0;width:2px;height:250px}
-  .beam{left:60px;top:10px;width:110px;height:2px}
-  .rope{left:169px;top:10px;width:1px;height:28px}
+  .base{left:20px;bottom:0;width:160px;height:2px}   /* chão: linha horizontal colada na base */
+  .pole{left:60px;bottom:0;width:2px;height:250px}   /* poste: linha vertical alta */
+  .beam{left:60px;top:10px;width:110px;height:2px}   /* viga: linha horizontal no alto, saindo do poste */
+  .rope{left:169px;top:10px;width:1px;height:28px}   /* corda: linha vertical fina pendurada na viga */
   
   /* Partes do boneco: começam transparentes e ganham a classe "show" via JS */
-  .part{opacity:0;transition:opacity .35s ease}   /* transition = fade suave */
-  .part.show{opacity:1}
+  .part{opacity:0;transition:opacity .35s ease}   /* opacity:0 = invisível; transition = fade suave de 0,35s */
+  .part.show{opacity:1}                           /* com a classe "show" (colocada pelo JS), fica visível */
   
   /* Cabeça: um círculo só com borda (border-radius:50% arredonda) */
   .head{
-    left:150px;top:38px;width:40px;height:40px;
-    border:2px solid var(--accent);border-radius:50%;
+    left:150px;top:38px;width:40px;height:40px;     /* posição e tamanho */
+    border:2px solid var(--accent);border-radius:50%; /* borda vinho + cantos 50% = círculo */
     background:transparent!important;   /* !important vence o fundo geral de ".stage div" */
   }
   /* Corpo, braços e pernas são linhas finas. transform-origin:top faz a
      rotação girar a partir do ponto em que prendem ao corpo. */
-  .body,.arm,.leg{background:var(--accent)!important;width:2px;transform-origin:top center}
-  .body{left:169px;top:78px;height:70px}
-  .arm{top:92px;height:44px}
-  .arm.l{left:169px;transform:rotate(50deg)}    /* gira p/ um lado... */
-  .arm.r{left:169px;transform:rotate(-50deg)}   /* ...e p/ o outro */
-  .leg{top:148px;height:52px}
-  .leg.l{left:169px;transform:rotate(28deg)}
-  .leg.r{left:169px;transform:rotate(-28deg)}
+  .body,.arm,.leg{background:var(--accent)!important;width:2px;transform-origin:top center} /* três peças compartilham: cor vinho, 2px de largura e pivô no topo */
+  .body{left:169px;top:78px;height:70px}            /* tronco: logo abaixo da cabeça */
+  .arm{top:92px;height:44px}                        /* braços: altura e ponto de partida (no peito) */
+  .arm.l{left:169px;transform:rotate(50deg)}    /* gira p/ um lado... (rotate inclina a linha em graus) */
+  .arm.r{left:169px;transform:rotate(-50deg)}   /* ...e p/ o outro (graus negativos = sentido oposto) */
+  .leg{top:148px;height:52px}                       /* pernas: partem da base do tronco */
+  .leg.l{left:169px;transform:rotate(28deg)}        /* perna esquerda aberta para um lado */
+  .leg.r{left:169px;transform:rotate(-28deg)}       /* perna direita aberta para o outro */
   
   /* ==========================================================
      5. COLUNA DE INFORMAÇÕES
      ========================================================== */
-  .info{display:flex;flex-direction:column;gap:30px;min-width:0}
+  .info{display:flex;flex-direction:column;gap:30px;min-width:0} /* flex em coluna: blocos empilhados com 30px entre si; min-width:0 evita estourar a largura */
   
   /* Palavra: cada letra é uma "célula" com um traço embaixo (a lacuna) */
-  #word{display:flex;flex-wrap:wrap;gap:8px 10px;min-height:48px}
+  #word{display:flex;flex-wrap:wrap;gap:8px 10px;min-height:48px} /* células lado a lado; quebram de linha se faltar espaço; gap = vertical 8px / horizontal 10px */
   .cell{
-    display:inline-block;min-width:30px;height:46px;
+    display:inline-block;min-width:30px;height:46px;  /* tamanho de cada lacuna */
     border-bottom:1.5px solid var(--ink);   /* o traço da lacuna */
-    text-align:center;font-size:32px;line-height:44px;text-transform:uppercase;
+    text-align:center;font-size:32px;line-height:44px;text-transform:uppercase; /* letra centralizada, grande e maiúscula */
   }
   .cell.gap{border:0;min-width:14px}        /* caracteres que não são letras (hífen): sem traço */
   .cell.reveal{color:var(--accent)}         /* letras reveladas após a derrota ficam em vinho */
   
   /* Letras usadas à esquerda, contador à direita */
-  .meta{display:flex;justify-content:space-between;gap:24px}
-  .right{text-align:right}
-  #used{font-size:20px;letter-spacing:.18em;min-height:28px;text-transform:uppercase}
+  .meta{display:flex;justify-content:space-between;gap:24px} /* dois blocos nas pontas opostas da linha */
+  .right{text-align:right}                                  /* alinha o texto do bloco à direita */
+  #used{font-size:20px;letter-spacing:.18em;min-height:28px;text-transform:uppercase} /* letras usadas: espaçadas e com altura mínima (não "pula" quando vazio) */
   #used .hit{color:var(--ink)}                                   /* acerto */
   #used .miss{color:var(--accent);text-decoration:line-through}  /* erro riscado */
-  #counter{font-size:20px}
+  #counter{font-size:20px}                                       /* contador "0 / 6" */
   
   /* Dicas */
-  .hints ol{margin:0 0 12px;padding-left:20px;font-style:italic;font-size:17px;line-height:1.5;color:#3c3a36}
-  .hints li{margin-bottom:4px}
+  .hints ol{margin:0 0 12px;padding-left:20px;font-style:italic;font-size:17px;line-height:1.5;color:#3c3a36} /* lista de dicas: itálico, entrelinha 1.5, cinza escuro */
+  .hints li{margin-bottom:4px} /* pequeno espaço entre uma dica e outra */
   /* Botão com aparência de link sublinhado */
   .link{
-    background:none;border:0;padding:0;
-    font:12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;
-    color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:3px;cursor:pointer;
+    background:none;border:0;padding:0;   /* tira a aparência padrão de botão */
+    font:12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase; /* texto pequeno, espaçado, maiúsculo */
+    color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:3px;cursor:pointer; /* sublinhado feito com borda; cursor de "mãozinha" */
   }
   .link:disabled{color:var(--muted);border-color:var(--line);cursor:default}  /* estado desativado */
   
@@ -126,38 +142,38 @@
      6. MENSAGENS
      O JS troca a classe (warn/win/lose) para mudar a cor.
      ========================================================== */
-  #msg{text-align:center;font-style:italic;font-size:18px;min-height:28px;margin:28px 0 20px}
-  #msg.warn{color:var(--muted)}
-  #msg.win{color:var(--ink);font-style:normal;letter-spacing:.04em}
-  #msg.lose{color:var(--accent)}
+  #msg{text-align:center;font-style:italic;font-size:18px;min-height:28px;margin:28px 0 20px} /* mensagem centralizada; min-height evita o layout "pular" */
+  #msg.warn{color:var(--muted)}                                   /* aviso: cinza */
+  #msg.win{color:var(--ink);font-style:normal;letter-spacing:.04em} /* vitória: sem itálico, levemente espaçada */
+  #msg.lose{color:var(--accent)}                                  /* derrota: vinho */
   
   /* ==========================================================
      7. TECLADO VIRTUAL
      ========================================================== */
-  #kb{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:560px;margin:0 auto}
+  #kb{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:560px;margin:0 auto} /* teclas em linhas que quebram sozinhas, centralizadas */
   #kb button{
-    width:40px;height:40px;background:transparent;border:1px solid var(--line);
+    width:40px;height:40px;background:transparent;border:1px solid var(--line); /* tecla quadrada com borda fina */
     color:var(--ink);font:15px var(--sans);cursor:pointer;
     transition:background .15s,color .15s,border-color .15s;   /* animação suave ao mudar de estado */
   }
-  #kb button:hover{border-color:var(--ink)}
+  #kb button:hover{border-color:var(--ink)}                                          /* passar o mouse escurece a borda */
   #kb button.hit{background:var(--ink);color:var(--paper);border-color:var(--ink)}  /* tecla acertada: preenchida */
   #kb button.miss{color:var(--muted);border-color:transparent;text-decoration:line-through} /* errada: riscada */
-  #kb button.hit,#kb button.miss{cursor:default}
+  #kb button.hit,#kb button.miss{cursor:default}  /* teclas já usadas não parecem clicáveis */
   #kb.locked button{opacity:.35;cursor:default}   /* fim de jogo: teclado "apagado" */
   
   /* ==========================================================
      8. BOTÃO NOVA PARTIDA e ACESSIBILIDADE
      ========================================================== */
-  footer{text-align:center;margin-top:44px}
+  footer{text-align:center;margin-top:44px} /* rodapé centralizado, afastado do teclado */
   #new{
-    background:var(--ink);color:var(--paper);border:0;padding:14px 34px;
+    background:var(--ink);color:var(--paper);border:0;padding:14px 34px; /* botão escuro com texto claro */
     font:12px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;
     cursor:pointer;transition:background .2s;
   }
-  #new:hover{background:var(--accent)}
+  #new:hover{background:var(--accent)} /* ao passar o mouse, muda para vinho */
   /* Contorno visível ao navegar com Tab (importante para quem usa só o teclado) */
-  button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  button:focus-visible{outline:2px solid var(--accent);outline-offset:3px} /* :focus-visible só aparece no foco por teclado, não no clique */
   
   /* ==========================================================
      9. COMEMORAÇÃO DE VITÓRIA
@@ -165,111 +181,128 @@
   
   /* Camada fixa sobre a tela inteira. pointer-events:none deixa os cliques
      "atravessarem" os confetes, para o jogador poder clicar em Nova partida. */
-  #confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:10}
+  #confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:10} /* inset:0 = cola nos 4 cantos; z-index:10 = fica por cima; overflow:hidden corta o que sair da tela */
   
   /* Cada confete é um pequeno retângulo (papel picado). O JS define, para cada um,
      a posição inicial, a cor, a duração e as variáveis --dx (deslize lateral)
      e --rot (giro), que a animação abaixo usa. */
-  .confetto{position:absolute;top:-20px;width:7px;height:14px;animation:fall linear forwards}
+  .confetto{position:absolute;top:-20px;width:7px;height:14px;animation:fall linear forwards} /* começa acima da tela; "fall" é a animação; linear = velocidade constante; forwards = fica no estado final */
   
   /* Cai da parte de cima até além da base da tela, girando e desbotando no fim */
-  @keyframes fall{
-    0%  {transform:translate3d(0,0,0) rotate(0);opacity:1}
-    85% {opacity:1}
-    100%{transform:translate3d(var(--dx),105vh,0) rotate(var(--rot));opacity:0}
+  @keyframes fall{ /* @keyframes descreve a animação em etapas (de 0% a 100%) */
+    0%  {transform:translate3d(0,0,0) rotate(0);opacity:1}                         /* início: no lugar, visível */
+    85% {opacity:1}                                                                /* até 85% do tempo continua visível */
+    100%{transform:translate3d(var(--dx),105vh,0) rotate(var(--rot));opacity:0}    /* fim: deslocado de lado, abaixo da tela, girado e sumindo */
   }
   
   /* As letras da palavra "saltam" uma depois da outra, como uma onda.
      --i é o número da letra (definido pelo JS) e cria o atraso escalonado. */
-  .cell.win{color:var(--accent);animation:pop .6s ease both;animation-delay:calc(var(--i) * 80ms)}
+  .cell.win{color:var(--accent);animation:pop .6s ease both;animation-delay:calc(var(--i) * 80ms)} /* calc: letra 0 salta já, letra 1 após 80ms, letra 2 após 160ms... */
   @keyframes pop{
-    0%,100%{transform:translateY(0)}
-    40%    {transform:translateY(-12px)}
+    0%,100%{transform:translateY(0)}      /* começo e fim: posição normal */
+    40%    {transform:translateY(-12px)}  /* no meio: sobe 12px (valor negativo = para cima) */
   }
   
   /* Mensagem de vitória um pouco maior, com destaque */
-  #msg.win{font-size:22px;color:var(--accent)}
+  #msg.win{font-size:22px;color:var(--accent)} /* esta regra vem depois da anterior e, por isso, sobrescreve a cor */
   
   /* Respeita quem desativou animações no sistema (acessibilidade) */
-  @media (prefers-reduced-motion:reduce){
-    #confetti{display:none}
-    .cell.win{animation:none}
+  @media (prefers-reduced-motion:reduce){ /* vale só se o usuário pediu "menos movimento" no sistema */
+    #confetti{display:none}   /* esconde os confetes */
+    .cell.win{animation:none} /* letras não saltam */
   }
-/* ==========================================================
-   10. TELA DE CONFIGURAÇÃO (nome, dificuldade, dicas)
-   ========================================================== */
-.player{margin:14px 0 0;font-size:16px;color:var(--ink)}
-.player .link{margin-left:14px}
-
-/* Camada que cobre a tela até o jogador começar */
-.setup{position:fixed;inset:0;z-index:20;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
-.setup[hidden]{display:none}
-.setup-box{width:100%;max-width:460px}
-.setup-box h2{font-weight:400;font-size:30px;margin:0 0 28px;text-align:center}
-.setup-box .label{margin:24px 0 10px}
-#name{
-  width:100%;padding:10px 0;font:20px var(--serif);color:var(--ink);
-  background:transparent;border:0;border-bottom:1.5px solid var(--ink);border-radius:0;
-}
-#name:focus{outline:none;border-color:var(--accent)}
-#name::placeholder{color:var(--muted);font-style:italic}
-
-.choices{display:flex;gap:8px}
-.choices button{
-  flex:1;padding:12px 8px;background:transparent;border:1px solid var(--line);
-  color:var(--ink);font:16px var(--serif);cursor:pointer;
-  display:flex;flex-direction:column;gap:4px;align-items:center;
-  transition:background .15s,color .15s,border-color .15s;
-}
-.choices button small{font:12px var(--sans);color:var(--muted)}
-.choices button:hover{border-color:var(--ink)}
-.choices button[aria-checked="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.choices button[aria-checked="true"] small{color:var(--line)}
-.note{margin:12px 0 0;font-style:italic;color:var(--muted);font-size:15px;min-height:22px}
-.start{
-  display:block;width:100%;margin-top:28px;background:var(--ink);color:var(--paper);border:0;padding:16px;
-  font:12px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;cursor:pointer;transition:background .2s;
-}
-.start:hover{background:var(--accent)}
-.start:disabled{opacity:.35;cursor:default;background:var(--ink)}
-input:focus-visible{outline:none}
-
-/* ==========================================================
-   11. BARRA DA CATEGORIA (fixa no topo), VIDAS E INTERAÇÕES
-   ========================================================== */
-.topic{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:14px;padding:12px 24px;background:var(--ink);color:var(--paper);box-shadow:0 2px 14px #0003}
-.topic .label{color:#b9b3a6;margin:0 0 5px}
-.topic strong{font:400 22px var(--serif);letter-spacing:.06em}
-.t-ico{font-size:32px;line-height:1}
-.t-side{margin-left:auto;white-space:nowrap}
-.topic.flash{animation:flash .7s}
-@keyframes flash{0%{background:var(--accent)}100%{background:var(--ink)}}
-#lives i{font-style:normal;font-size:20px;margin-left:3px;display:inline-block;color:#d46a6a;transition:color .3s,transform .3s}
-#lives i.off{color:#5a564e;transform:scale(.75)}
-
-/* Seletor de categoria com scroll horizontal (arraste, deslize ou use a roda do mouse) */
-.scroll-hint{float:right;text-transform:none;letter-spacing:.06em;font-style:italic}
-.setup-box{max-width:520px}
-.rail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 2px 14px;scrollbar-width:thin;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent)}
-.rail button{flex:0 0 112px;scroll-snap-align:start;padding:16px 8px;border:1px solid var(--line);border-radius:12px;background:#fffdf8;color:var(--ink);font:16px var(--serif);display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:transform .15s,background .15s,border-color .15s,box-shadow .15s}
-.rail .ci{font-size:34px;line-height:1.1}
-.rail small{font:11px var(--sans);color:var(--muted)}
-.rail button:hover{transform:translateY(-3px);border-color:var(--ink);box-shadow:0 6px 14px #0001}
-.rail button[aria-checked="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-3px) scale(1.04)}
-.rail button[aria-checked="true"] small{color:var(--line)}
-
-/* Feedback visual nas jogadas */
-.stage.shake{animation:shake .4s}
-@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-#kb button{width:44px;height:48px;border-radius:8px;background:#fffdf8}
-#kb button:not(.hit):not(.miss):hover{transform:translateY(-2px);box-shadow:0 4px 10px #0002}
-#kb button:active{transform:scale(.92)}
-#kb button.hit{background:#2f6b4f;border-color:#2f6b4f;color:#fff}
-#kb button.miss{background:transparent}
-.cell{border-radius:2px 2px 0 0}
-#msg{margin:22px 0 16px}
-footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 24px}
-#stats{flex-basis:100%;margin:6px 0 0;font:12px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-#new{border-radius:8px}
-@media(max-width:640px){#kb button{width:36px;height:44px}.topic strong{font-size:18px}}
-@media (prefers-reduced-motion:reduce){.stage.shake,.topic.flash{animation:none}}
+  /* ==========================================================
+     10. TELA DE CONFIGURAÇÃO (nome, dificuldade, dicas)
+     ========================================================== */
+  .player{margin:14px 0 0;font-size:16px;color:var(--ink)} /* linha "Nome · Dificuldade" */
+  .player .link{margin-left:14px}                          /* se houver um link dentro, afasta-o do texto */
+  
+  /* Camada que cobre a tela até o jogador começar */
+  .setup{position:fixed;inset:0;z-index:20;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto} /* tela cheia, acima de tudo (z-index 20), conteúdo centralizado, com rolagem se não couber */
+  .setup[hidden]{display:none}   /* quando o JS põe o atributo "hidden", some de vez (necessário porque display:flex acima anularia o hidden) */
+  .setup-box{width:100%;max-width:460px} /* caixa que ocupa a largura toda até o limite de 460px (redefinido mais abaixo) */
+  .setup-box h2{font-weight:400;font-size:30px;margin:0 0 28px;text-align:center} /* título da configuração */
+  .setup-box .label{margin:24px 0 10px} /* rótulos da configuração têm mais espaço em volta */
+  #name{
+    width:100%;padding:10px 0;font:20px var(--serif);color:var(--ink);   /* campo de nome ocupa a largura toda */
+    background:transparent;border:0;border-bottom:1.5px solid var(--ink);border-radius:0; /* só um traço embaixo, como uma linha de caderno */
+  }
+  #name:focus{outline:none;border-color:var(--accent)}            /* ao clicar no campo, o traço fica vinho */
+  #name::placeholder{color:var(--muted);font-style:italic}        /* ::placeholder estiliza a dica dentro do campo */
+  
+  .choices{display:flex;gap:8px} /* botões de escolha lado a lado */
+  .choices button{
+    flex:1;padding:12px 8px;background:transparent;border:1px solid var(--line); /* flex:1 = todos com a mesma largura */
+    color:var(--ink);font:16px var(--serif);cursor:pointer;
+    display:flex;flex-direction:column;gap:4px;align-items:center;   /* título em cima, subtítulo embaixo, centralizados */
+    transition:background .15s,color .15s,border-color .15s;         /* transição suave ao selecionar */
+  }
+  .choices button small{font:12px var(--sans);color:var(--muted)}    /* subtítulo pequeno ("Palavras curtas") */
+  .choices button:hover{border-color:var(--ink)}                     /* hover escurece a borda */
+  .choices button[aria-checked="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)} /* seletor de atributo: botão marcado pelo JS fica escuro */
+  .choices button[aria-checked="true"] small{color:var(--line)}      /* subtítulo claro sobre fundo escuro */
+  .note{margin:12px 0 0;font-style:italic;color:var(--muted);font-size:15px;min-height:22px} /* nota explicativa abaixo das opções */
+  .start{
+    display:block;width:100%;margin-top:28px;background:var(--ink);color:var(--paper);border:0;padding:16px; /* botão largo e escuro */
+    font:12px/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;cursor:pointer;transition:background .2s;
+  }
+  .start:hover{background:var(--accent)}                  /* hover: vinho */
+  .start:disabled{opacity:.35;cursor:default;background:var(--ink)} /* sem nome digitado: botão apagado e sem reação ao hover */
+  input:focus-visible{outline:none}                       /* remove o contorno padrão do campo (o traço vinho já indica o foco) */
+  
+  /* ==========================================================
+     11. BARRA DA CATEGORIA (fixa no topo), VIDAS E INTERAÇÕES
+     ========================================================== */
+  .topic{
+    position:sticky;top:0;z-index:5;                    /* sticky: acompanha a rolagem e "gruda" no topo */
+    display:flex;align-items:center;gap:14px;           /* itens em linha, alinhados verticalmente */
+    padding:12px 24px;background:var(--ink);color:var(--paper); /* faixa escura com texto claro */
+    box-shadow:0 2px 14px #0003;                        /* sombra suave (#0003 = preto com ~20% de opacidade) */
+  }
+  .topic .label{color:#b9b3a6;margin:0 0 5px}           /* rótulo "Categoria" em tom claro sobre o fundo escuro */
+  .topic strong{font:400 22px var(--serif);letter-spacing:.06em} /* nome da categoria */
+  .t-ico{font-size:32px;line-height:1}                  /* emoji grande */
+  .t-side{margin-left:auto;white-space:nowrap}          /* margin-left:auto empurra as vidas para a direita; nowrap impede quebra de linha */
+  .topic.flash{animation:flash .7s}                     /* o JS adiciona "flash" a cada nova partida */
+  @keyframes flash{0%{background:var(--accent)}100%{background:var(--ink)}} /* a barra pisca em vinho e volta ao escuro */
+  #lives i{font-style:normal;font-size:20px;margin-left:3px;display:inline-block;color:#d46a6a;transition:color .3s,transform .3s} /* cada coração: <i> sem itálico, rosado; inline-block permite aplicar transform */
+  #lives i.off{color:#5a564e;transform:scale(.75)}      /* coração perdido: cinza e menor (75%) */
+  
+  /* Seletor de categoria com scroll horizontal (arraste, deslize ou use a roda do mouse) */
+  .scroll-hint{float:right;text-transform:none;letter-spacing:.06em;font-style:italic} /* aviso "deslize →" à direita do rótulo, em tom discreto */
+  .setup-box{max-width:520px}                           /* sobrescreve os 460px anteriores: caixa mais larga para o carrossel */
+  .rail{
+    display:flex;gap:10px;overflow-x:auto;              /* cartas em linha; rolagem horizontal quando passam da largura */
+    scroll-snap-type:x mandatory;                       /* ao soltar a rolagem, "encaixa" numa carta */
+    padding:8px 2px 14px;scrollbar-width:thin;          /* respiro (espaço para o hover subir) e barra de rolagem fina */
+    -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent) /* máscara que esmaece a borda direita: sugere que há mais itens */
+  }
+  .rail button{
+    flex:0 0 112px;                                     /* largura fixa de 112px, sem encolher nem crescer */
+    scroll-snap-align:start;                            /* ponto de encaixe: início da carta */
+    padding:16px 8px;border:1px solid var(--line);border-radius:12px;background:#fffdf8; /* aparência de carta com cantos arredondados */
+    color:var(--ink);font:16px var(--serif);
+    display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer; /* emoji, nome e contagem empilhados */
+    transition:transform .15s,background .15s,border-color .15s,box-shadow .15s;  /* suaviza hover e seleção */
+  }
+  .rail .ci{font-size:34px;line-height:1.1}             /* emoji da categoria, grande */
+  .rail small{font:11px var(--sans);color:var(--muted)} /* "5 palavras" */
+  .rail button:hover{transform:translateY(-3px);border-color:var(--ink);box-shadow:0 6px 14px #0001} /* no hover a carta sobe 3px e ganha sombra */
+  .rail button[aria-checked="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-3px) scale(1.04)} /* carta selecionada: escura, elevada e 4% maior */
+  .rail button[aria-checked="true"] small{color:var(--line)} /* contagem clara sobre fundo escuro */
+  
+  /* Feedback visual nas jogadas */
+  .stage.shake{animation:shake .4s}                     /* o JS adiciona "shake" a cada erro */
+  @keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}} /* balança: esquerda, direita, esquerda, direita */
+  #kb button{width:44px;height:48px;border-radius:8px;background:#fffdf8} /* teclas maiores e arredondadas (sobrescrevem as da seção 7) */
+  #kb button:not(.hit):not(.miss):hover{transform:translateY(-2px);box-shadow:0 4px 10px #0002} /* só teclas ainda não usadas "sobem" no hover (:not exclui hit e miss) */
+  #kb button:active{transform:scale(.92)}               /* :active = enquanto está pressionada: encolhe um pouco, como um clique de verdade */
+  #kb button.hit{background:#2f6b4f;border-color:#2f6b4f;color:#fff} /* acerto agora é verde (sobrescreve o preto da seção 7) */
+  #kb button.miss{background:transparent}               /* erro: sem fundo, só riscado */
+  .cell{border-radius:2px 2px 0 0}                      /* cantos de cima levemente arredondados nas lacunas */
+  #msg{margin:22px 0 16px}                              /* ajusta o espaçamento da mensagem (sobrescreve a seção 6) */
+  footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 24px} /* botões e placar em linha, quebrando se faltar espaço */
+  #stats{flex-basis:100%;margin:6px 0 0;font:12px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)} /* flex-basis:100% = o placar ocupa uma linha inteira só dele */
+  #new{border-radius:8px}                               /* botão Nova partida arredondado */
+  @media(max-width:640px){#kb button{width:36px;height:44px}.topic strong{font-size:18px}} /* no celular: teclas e título da categoria menores */
+  @media (prefers-reduced-motion:reduce){.stage.shake,.topic.flash{animation:none}} /* sem animações para quem pediu menos movimento */
