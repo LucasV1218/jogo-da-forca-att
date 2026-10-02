@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forca</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- BARRA DA CATEGORIA: fica fixa no topo durante a partida -->
+  <div id="topic" class="topic" aria-live="polite">
+    <span class="t-ico" id="tIco"></span>
+    <div><div class="label">Categoria</div><strong id="tName"></strong></div>
+    <div class="t-side" id="lives" aria-label="Vidas restantes"></div>
+  </div>
+
+  <main>
+    <header>
+      <h1>Forca</h1>
+      <p class="sub">Uma palavra. Seis chances.</p>
+      <p class="player" id="player"></p>
+    </header>
+
+    <div id="setup" class="setup" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+      <div class="setup-box">
+        <h2 id="setupTitle">Antes de começar</h2>
+
+        <label class="label" for="name">Seu nome</label>
+        <input id="name" type="text" maxlength="20" autocomplete="off" placeholder="Como devemos chamar você?">
+
+        <div class="label">Categoria <span class="scroll-hint">deslize →</span></div>
+        <div id="cats" class="rail" role="radiogroup" aria-label="Categoria"></div>
+
+        <div class="label">Dificuldade</div>
+        <div id="levels" class="choices" role="radiogroup" aria-label="Dificuldade">
+          <button type="button" role="radio" data-level="easy"><b>Fácil</b><small>Palavras curtas</small></button>
+          <button type="button" role="radio" data-level="medium"><b>Médio</b><small>Palavras médias</small></button>
+          <button type="button" role="radio" data-level="hard"><b>Difícil</b><small>Palavras longas</small></button>
+        </div>
+
+        <div class="label">Dicas por partida</div>
+        <div id="hintChoices" class="choices" role="radiogroup" aria-label="Quantidade de dicas">
+          <button type="button" role="radio" data-n="0">0</button>
+          <button type="button" role="radio" data-n="1">1</button>
+          <button type="button" role="radio" data-n="2">2</button>
+        </div>
+        <p class="note" id="setupNote"></p>
+
+        <button id="startBtn" type="button" class="start">Começar partida</button>
+      </div>
+    </div>
+
+    <section class="board">
+      <div class="stage" role="img" aria-label="Desenho da forca">
+        <div class="frame base"></div><div class="frame pole"></div>
+        <div class="frame beam"></div><div class="frame rope"></div>
+        <div class="part head"></div><div class="part body"></div>
+        <div class="part arm l"></div><div class="part arm r"></div>
+        <div class="part leg l"></div><div class="part leg r"></div>
+      </div>
+
+      <div class="info">
+        <div>
+          <div class="label">Palavra</div>
+          <div id="word" aria-live="polite"></div>
+        </div>
+        <div class="meta">
+          <div><div class="label">Letras usadas</div><div id="used"></div></div>
+          <div class="right"><div class="label">Erros</div><div id="counter">0 / 6</div></div>
+        </div>
+        <div class="hints">
+          <div class="label">Dicas</div>
+          <ol id="hintList"></ol>
+          <button id="hintBtn" type="button" class="link">Pedir dica</button>
+        </div>
+      </div>
+    </section>
+
+    <p id="msg" role="status" aria-live="assertive"></p>
+    <div id="kb" aria-label="Teclado virtual"></div>
+
+    <footer>
+      <button id="new" type="button">Nova partida</button>
+      <button id="change" type="button" class="link">Trocar categoria</button>
+      <p id="stats"></p>
+    </footer>
+  </main>
+
+  <div id="confetti" aria-hidden="true"></div>
+  <script src="script.js"></script>
+</body>
+</html>
